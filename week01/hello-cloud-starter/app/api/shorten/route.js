@@ -60,8 +60,6 @@ export async function POST(request) {
      *
      * 클라이언트가 필요한 값을 보내지 않은 상황입니다.
      *
-     * TODO:
-     * 적절한 HTTP status code로 수정하세요.
      */
     if (!originalUrl) {
       return NextResponse.json(
@@ -71,7 +69,7 @@ export async function POST(request) {
             message: "Original URL is required.",
           },
         },
-        { status: 200 }
+        { status: 400 }
       );
     }
 
@@ -82,8 +80,6 @@ export async function POST(request) {
      * 서버가 허용하는 최대 길이보다
      * 긴 URL을 클라이언트가 보낸 상황입니다.
      *
-     * TODO:
-     * 적절한 HTTP status code로 수정하세요.
      */
     if (originalUrl.length > MAX_URL_LENGTH) {
       return NextResponse.json(
@@ -94,7 +90,7 @@ export async function POST(request) {
               `URL must be ${MAX_URL_LENGTH} characters or fewer.`,
           },
         },
-        { status: 200 }
+        { status: 400 }
       );
     }
 
@@ -114,8 +110,6 @@ export async function POST(request) {
       /*
        * 올바른 URL 형식이 아닌 경우
        *
-       * TODO:
-       * 적절한 HTTP status code로 수정하세요.
        */
       return NextResponse.json(
         {
@@ -125,7 +119,7 @@ export async function POST(request) {
               "URL must start with http:// or https://.",
           },
         },
-        { status: 200 }
+        { status: 400 }
       );
     }
 
@@ -140,8 +134,6 @@ export async function POST(request) {
       /*
        * 허용하지 않는 URL을 보낸 경우
        *
-       * TODO:
-       * 적절한 HTTP status code로 수정하세요.
        */
       return NextResponse.json(
         {
@@ -151,7 +143,7 @@ export async function POST(request) {
               "URL must start with http:// or https://.",
           },
         },
-        { status: 200 }
+        { status: 400 }
       );
     }
 
@@ -169,8 +161,6 @@ export async function POST(request) {
     /*
      * URL 생성 성공
      *
-     * TODO:
-     * 적절한 HTTP status code로 수정하세요.
      */
     return NextResponse.json(
       {
@@ -178,7 +168,7 @@ export async function POST(request) {
         shortUrl: `${baseUrl}/${shortCode}`,
         originalUrl,
       },
-      { status: 200 }
+      { status: 201 }
     );
 
   } catch {
@@ -188,8 +178,6 @@ export async function POST(request) {
      *
      * 예상하지 못한 오류가 발생한 경우입니다.
      *
-     * TODO:
-     * 적절한 HTTP status code로 수정하세요.
      */
     return NextResponse.json(
       {
@@ -198,7 +186,7 @@ export async function POST(request) {
           message: "Failed to create short URL.",
         },
       },
-      { status: 200 }
+      { status: 500 }
     );
   }
 }

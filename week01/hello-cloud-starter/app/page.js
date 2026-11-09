@@ -14,7 +14,7 @@ function validateUrl(value) {
 
   // TODO 2: 최대 길이 검증
   if (trimmedUrl.length > MAX_URL_LENGTH) {
-    return `URL으ㄴ ${MAX_URL_LENGTH}자 이하로 입력해주세요.`;
+    return `URL은 ${MAX_URL_LENGTH}자 이하로 입력해 주세요.`;
   }
   // TODO 3: http:// 또는 https:// 시작 여부 검증
   if (
@@ -60,12 +60,28 @@ export default function Home() {
 
     setIsLoading(true);
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 800);
-    });
+    try {
+      const response = await fetch("/api/shorten", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ originalUrl }),
+      });
 
-    setResult("입력값 검증이 완료되었습니다. 아직 Backend API와 연결되진 않았습니다.");
-    setIsLoading(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error?.message || "요청 처리에 실패했습니다.");
+        return;
+      }
+
+      setResult(data.shortUrl);
+    } catch {
+      setError("서버에 연결할 수 없습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
